@@ -1,18 +1,12 @@
-import { ModeToggle } from "@/components/theme-toggle";
-
 export default function Home() {
   return (
-    <div className="min-h-screen p-8">
-      <header className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl font-bold">Certificate Generator</h1>
-        <ModeToggle />
-      </header>
+    <div className="container mx-auto p-8">
       <main className="flex flex-col gap-8 items-center justify-center min-h-[60vh]">
         <div className="text-center space-y-4">
           <h2 className="text-4xl font-bold text-foreground">Welcome to Certificate Generator</h2>
           <p className="text-lg text-muted-foreground max-w-2xl">
-            A modern Next.js application built with TypeScript, Tailwind CSS, and shadcn/ui components.
-            Dark mode is fully configured and ready to use!
+            A modern Next.js application built with TypeScript, Tailwind CSS, shadcn/ui components, and Clerk authentication.
+            Dark mode and user authentication are fully configured and ready to use!
           </p>
         </div>
         
@@ -26,8 +20,8 @@ export default function Home() {
             <p className="text-muted-foreground">Fully typed development experience with TypeScript support.</p>
           </div>
           <div className="p-6 border border-border rounded-lg bg-card">
-            <h3 className="text-xl font-semibold mb-2">shadcn/ui</h3>
-            <p className="text-muted-foreground">Beautiful UI components with CSS variables and dark mode.</p>
+            <h3 className="text-xl font-semibold mb-2">Clerk Auth</h3>
+            <p className="text-muted-foreground">Secure authentication with sign-in/sign-up modals and user management.</p>
           </div>
         </div>
       </main>
