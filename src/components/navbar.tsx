@@ -31,9 +31,14 @@ export function Navbar() {
                     Dashboard
                   </Button>
                 </Link>
-                <Link href="/dashboard/upload">
-                  <Button variant="ghost" size="sm" className={pathname === '/dashboard/upload' ? 'bg-muted' : ''}>
+                <Link href="/dashboard/upload-csv">
+                  <Button variant="ghost" size="sm" className={pathname === '/dashboard/upload-csv' ? 'bg-muted' : ''}>
                     Upload CSV
+                  </Button>
+                </Link>
+                <Link href="/dashboard/upload-template">
+                  <Button variant="ghost" size="sm" className={pathname === '/dashboard/upload-template' ? 'bg-muted' : ''}>
+                    Upload Template
                   </Button>
                 </Link>
                 <Link href="/dashboard/create">

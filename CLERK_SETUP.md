@@ -13,8 +13,8 @@ CLERK_SECRET_KEY=your_secret_key_here
 # Clerk Sign-in/Sign-up URLs (optional, defaults are set)
 NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
 NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
-NEXT_PUBLIC_CLERK_SIGN_IN_FORCE_REDIRECT_URL=/
-NEXT_PUBLIC_CLERK_SIGN_UP_FORCE_REDIRECT_URL=/
+NEXT_PUBLIC_CLERK_SIGN_IN_FORCE_REDIRECT_URL=/dashboard
+NEXT_PUBLIC_CLERK_SIGN_UP_FORCE_REDIRECT_URL=/dashboard
 ```
 
 ## Getting Your Clerk Keys
@@ -32,7 +32,7 @@ NEXT_PUBLIC_CLERK_SIGN_UP_FORCE_REDIRECT_URL=/
 ✅ **Middleware** - Protects all routes except home page and auth pages  
 ✅ **Navbar** - Shows sign-in/sign-up buttons when not authenticated
 ✅ **UserButton** - Shows user avatar and profile menu when authenticated
-✅ **Modal Authentication** - Sign-in/sign-up opens in modals, not separate pages
+✅ **Dedicated Auth Pages** - Sign-in/sign-up pages with custom styling
 
 ## Route Protection
 
