@@ -31,7 +31,7 @@ export function Navbar() {
                     Dashboard
                   </Button>
                 </Link>
-                <Link href="/dashboard/upload-csv">
+                {/* <Link href="/dashboard/upload-csv">
                   <Button variant="ghost" size="sm" className={pathname === '/dashboard/upload-csv' ? 'bg-muted' : ''}>
                     Upload CSV
                   </Button>
@@ -45,7 +45,7 @@ export function Navbar() {
                   <Button variant="ghost" size="sm" className={pathname === '/dashboard/editor' ? 'bg-muted' : ''}>
                     Editor
                   </Button>
-                </Link>
+                </Link> */}
               </div>
             )}
           </div>

@@ -5,6 +5,9 @@ import {
   AnyCanvasElement,
   CanvasBackground
 } from '@/lib/types/canvas';
+import { useMemo } from 'react';
+
+// Removed unused local CanvasState interface
 
 const generateId = () => `element_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
@@ -42,6 +45,7 @@ export const useCanvasStore = create<CanvasStoreState>()(
       isRulersVisible: false,
       snapToGrid: false,
       gridSize: 20,
+      fitRequestId: 0,
       
       // Background actions
       setBackground: (background: CanvasBackground) => {
@@ -209,6 +213,9 @@ export const useCanvasStore = create<CanvasStoreState>()(
       resetView: () => {
         set({ zoom: 1, panX: 0, panY: 0 });
       },
+      triggerFit: () => {
+        set((state) => ({ fitRequestId: (state.fitRequestId || 0) + 1 }));
+      },
       
       setCanvasSize: (width: number, height: number) => {
         set({ canvasWidth: width, canvasHeight: height });
@@ -280,10 +287,14 @@ export const useCanvasStore = create<CanvasStoreState>()(
 // Selector hooks for better performance
 export const useCanvasBackground = () => useCanvasStore((state) => state.background);
 export const useCanvasElements = () => useCanvasStore((state) => state.elements);
-export const useSelectedElements = () => useCanvasStore((state) => {
-  const { elements, selectedElementIds } = state;
-  return elements.filter(el => selectedElementIds.includes(el.id));
-});
+export const useSelectedElements = () => {
+  const elements = useCanvasStore((state) => state.elements);
+  const selectedElementIds = useCanvasStore((state) => state.selectedElementIds);
+
+  return useMemo(() => {
+    return elements.filter((el) => selectedElementIds.includes(el.id));
+  }, [elements, selectedElementIds]);
+};
 export const useCanvasZoom = () => useCanvasStore((state) => state.zoom);
 export const useCanvasPanX = () => useCanvasStore((state) => state.panX);
 export const useCanvasPanY = () => useCanvasStore((state) => state.panY);

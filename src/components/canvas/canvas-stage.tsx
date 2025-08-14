@@ -21,8 +21,10 @@ interface CanvasStageProps {
 
 function CanvasStageComponent({ className = "" }: CanvasStageProps) {
   const stageRef = useRef<Konva.Stage>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const transformerRef = useRef<Konva.Transformer>(null);
   const [backgroundImage, setBackgroundImage] = useState<HTMLImageElement | null>(null);
+  const hasAutoFittedRef = useRef(false);
   
   const background = useCanvasBackground();
   const elements = useCanvasElements();
@@ -31,6 +33,9 @@ function CanvasStageComponent({ className = "" }: CanvasStageProps) {
   const panY = useCanvasPanY();
   const canvasWidth = useCanvasWidth();
   const canvasHeight = useCanvasHeight();
+  const setZoom = useCanvasStore((s) => s.setZoom);
+  const setPan = useCanvasStore((s) => s.setPan);
+  const fitRequestId = useCanvasStore((s) => s.fitRequestId);
   const selectedElementIds = useCanvasStore((s) => s.selectedElementIds);
   const selectElements = useCanvasStore((s) => s.selectElements);
   const clearSelection = useCanvasStore((s) => s.clearSelection);
@@ -43,10 +48,36 @@ function CanvasStageComponent({ className = "" }: CanvasStageProps) {
       img.crossOrigin = 'anonymous';
       img.onload = () => {
         setBackgroundImage(img);
+        // Allow a fresh auto-fit when background/template changes
+        hasAutoFittedRef.current = false;
       };
       img.src = background.value;
     }
   }, [background]);
+
+  // Auto-fit and center the canvas once when dimensions are known
+  const performFit = React.useCallback(() => {
+    const container = containerRef.current;
+    if (!container || canvasWidth <= 0 || canvasHeight <= 0) return;
+    const rect = container.getBoundingClientRect();
+    if (rect.width <= 0 || rect.height <= 0) return;
+    const fitZoom = Math.min(rect.width / canvasWidth, rect.height / canvasHeight);
+    const offsetX = (rect.width - canvasWidth * fitZoom) / 2;
+    const offsetY = (rect.height - canvasHeight * fitZoom) / 2;
+    setZoom(fitZoom);
+    setPan(offsetX, offsetY);
+    hasAutoFittedRef.current = true;
+  }, [canvasWidth, canvasHeight, setZoom, setPan]);
+
+  useEffect(() => {
+    if (hasAutoFittedRef.current) return;
+    performFit();
+  }, [canvasWidth, canvasHeight, performFit]);
+
+  useEffect(() => {
+    if (fitRequestId == null) return;
+    performFit();
+  }, [fitRequestId, performFit]);
 
   // Handle transformer selection
   useEffect(() => {
@@ -147,7 +178,11 @@ function CanvasStageComponent({ className = "" }: CanvasStageProps) {
         fontSize={element.fontSize}
         fontFamily={element.fontFamily}
         fontStyle={element.fontStyle || 'normal'}
-        textDecoration={element.textDecoration || ''}
+        textDecoration={element.textDecoration || 'none'}
+        wrap={element.wrap || 'word'}
+        lineHeight={element.lineHeight || 1}
+        ellipsis={element.ellipsis ?? true}
+        padding={2}
         fill={element.fill}
         align={element.align || 'left'}
         verticalAlign={element.verticalAlign || 'top'}
@@ -188,10 +223,11 @@ function CanvasStageComponent({ className = "" }: CanvasStageProps) {
 
   return (
     <div 
-      className={`relative overflow-hidden border border-border rounded-lg ${className}`}
+      className={`relative w-full h-full border border-border rounded-lg ${className}`}
       onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); }}
       onDrop={(e) => { e.preventDefault(); e.stopPropagation(); }}
     >
+      <div ref={containerRef} className="w-full h-full">
       <Stage
         ref={stageRef}
         width={canvasWidth}
@@ -204,6 +240,28 @@ function CanvasStageComponent({ className = "" }: CanvasStageProps) {
         onTap={handleStageClick}
         // improve performance by throttling pointer events
         listening={true}
+        onWheel={(e) => {
+          e.evt.preventDefault();
+          const stage = stageRef.current;
+          if (!stage) return;
+          const oldScale = zoom;
+          const pointer = stage.getPointerPosition();
+          if (!pointer) return;
+          const scaleBy = 1.05;
+          const direction = e.evt.deltaY > 0 ? -1 : 1;
+          const newScale = direction > 0 ? oldScale * scaleBy : oldScale / scaleBy;
+          const clamped = Math.max(0.1, Math.min(5, newScale));
+          const mousePointTo = {
+            x: (pointer.x - panX) / oldScale,
+            y: (pointer.y - panY) / oldScale,
+          };
+          const newPos = {
+            x: pointer.x - mousePointTo.x * clamped,
+            y: pointer.y - mousePointTo.y * clamped,
+          };
+          setZoom(clamped);
+          setPan(newPos.x, newPos.y);
+        }}
       >
         <Layer>
           {/* Background Image */}
@@ -239,6 +297,7 @@ function CanvasStageComponent({ className = "" }: CanvasStageProps) {
           />
         </Layer>
       </Stage>
+      </div>
     </div>
   );
 }

@@ -16,7 +16,7 @@ interface CanvasPropertiesPanelProps {
 
 export function CanvasPropertiesPanel({ className = "" }: CanvasPropertiesPanelProps) {
   const selectedElements = useSelectedElements();
-  const { updateElement } = useCanvasStore();
+  const updateElement = useCanvasStore((s) => s.updateElement);
 
   const selectedTextElement = selectedElements.length === 1 && selectedElements[0].type === 'text'
     ? selectedElements[0] as TextElement

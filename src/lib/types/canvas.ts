@@ -89,6 +89,8 @@ export interface CanvasStoreState {
   isRulersVisible: boolean;
   snapToGrid: boolean;
   gridSize: number;
+  // View fit requests
+  fitRequestId?: number;
   
   // Actions
   setBackground: (background: CanvasBackground) => void;
@@ -113,6 +115,7 @@ export interface CanvasStoreState {
   setPan: (x: number, y: number) => void;
   resetView: () => void;
   setCanvasSize: (width: number, height: number) => void;
+  triggerFit?: () => void;
   
   // Utility actions
   copyElements: (ids: string[]) => void;

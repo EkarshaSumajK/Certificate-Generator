@@ -32,16 +32,15 @@ interface CanvasToolbarProps {
 }
 
 export function CanvasToolbar({ className = "" }: CanvasToolbarProps) {
-  const { 
-    addElement, 
-    deleteElement, 
-    duplicateElement, 
-    copyElements, 
-    pasteElements,
-    selectedElementIds,
-    setZoom,
-    resetView
-  } = useCanvasStore();
+  const addElement = useCanvasStore((s) => s.addElement);
+  const deleteElement = useCanvasStore((s) => s.deleteElement);
+  const duplicateElement = useCanvasStore((s) => s.duplicateElement);
+  const copyElements = useCanvasStore((s) => s.copyElements);
+  const pasteElements = useCanvasStore((s) => s.pasteElements);
+  const selectedElementIds = useCanvasStore((s) => s.selectedElementIds);
+  const setZoom = useCanvasStore((s) => s.setZoom);
+  const resetView = useCanvasStore((s) => s.resetView);
+  const triggerFit = useCanvasStore((s) => s.triggerFit);
   
   const canUndo = useCanvasCanUndo();
   const canRedo = useCanvasCanRedo();
@@ -231,37 +230,42 @@ export function CanvasToolbar({ className = "" }: CanvasToolbarProps) {
             <RotateCcw className="w-4 h-4" />
             Reset
           </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={triggerFit}
+            className="flex items-center gap-2"
+          >
+            Fit
+          </Button>
         </div>
         
-        {/* Data Binding for selected text */}
-        {selectedTextElement && (
-          <div className="flex items-center gap-2 pl-2">
-            <span className="text-sm text-muted-foreground">Bind to column:</span>
-            <select
-              className="h-8 rounded-md border border-border bg-background px-2 text-sm"
-              value={selectedTextElement.dataKey || ''}
-              onChange={(e) => {
-                const val = e.target.value;
-                if (!selectedTextElement) return;
-                useCanvasStore.getState().updateElement(selectedTextElement.id, { dataKey: val || undefined });
-              }}
-            >
-              <option value="">Unbound</option>
-              {(csvData?.headers || []).map((h) => (
-                <option key={h} value={h}>{h}</option>
-              ))}
-            </select>
-          </div>
-        )}
+        {/* Data Binding row: reserve height by keeping it in DOM and toggling visibility */}
+        <div className={`flex items-center gap-2 pl-2 ${selectedTextElement ? '' : 'invisible'}`}>
+          <span className="text-sm text-muted-foreground">Bind to column:</span>
+          <select
+            className="h-8 rounded-md border border-border bg-background px-2 text-sm"
+            value={selectedTextElement?.dataKey || ''}
+            disabled={!selectedTextElement}
+            onChange={(e) => {
+              const val = e.target.value;
+              if (!selectedTextElement) return;
+              useCanvasStore.getState().updateElement(selectedTextElement.id, { dataKey: val || undefined });
+            }}
+          >
+            <option value="">Unbound</option>
+            {(csvData?.headers || []).map((h) => (
+              <option key={h} value={h}>{h}</option>
+            ))}
+          </select>
+        </div>
       </div>
       
-      {hasSelection && (
-        <div className="mt-3 pt-3 border-t border-border">
-          <p className="text-sm text-muted-foreground">
-            {selectedElementIds.length} element{selectedElementIds.length > 1 ? 's' : ''} selected
-          </p>
-        </div>
-      )}
+      <div className={`mt-3 pt-3 border-t border-border ${hasSelection ? '' : 'invisible'}`}>
+        <p className="text-sm text-muted-foreground">
+          {selectedElementIds.length} element{selectedElementIds.length > 1 ? 's' : ''} selected
+        </p>
+      </div>
     </div>
   );
 }

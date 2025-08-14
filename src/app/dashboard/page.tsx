@@ -52,30 +52,50 @@ export default function DashboardHome() {
   const nextAction = getNextAction();
 
   return (
-    <div className="container mx-auto p-8">
-      <div className="max-w-6xl mx-auto">
+    <div className="container mx-auto p-8 relative">
+      {/* Subtle page backdrop */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-64 bg-gradient-to-b from-primary/10 to-transparent -z-10" />
+      <div className="max-w-6xl mx-auto space-y-12">
         {/* Welcome Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-foreground mb-4">
+        <div className="text-center min-h-[60vh] flex flex-col items-center justify-center">
+          <span className="inline-flex items-center rounded-full border px-3 py-1 text-xs md:text-sm text-muted-foreground bg-background/60 backdrop-blur">
+            Create certificates in 3 simple steps
+          </span>
+          <h1 className="text-4xl md:text-5xl font-bold text-foreground mt-4 mb-3">
             Welcome back, {user?.firstName || "User"}! 👋
           </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
             Follow the steps below to create beautiful certificates for your recipients.
           </p>
+          <div className="mt-6 flex gap-3">
+            <Link href={nextAction.href}>
+              <Button size="lg" className="px-6">
+                {nextAction.buttonText}
+                <ArrowRight className="w-4 h-4 ml-2" />
+              </Button>
+            </Link>
+            {/* <Link href="/dashboard/editor">
+              <Button size="lg" variant="outline" className="px-6">
+                Go to Editor
+              </Button>
+            </Link> */}
+          </div>
         </div>
 
         {/* Workflow Progress */}
-        <div className="mb-12">
-          <WorkflowProgress 
-            currentStep={currentStep}
-            completedSteps={completedSteps}
-            className="max-w-4xl mx-auto"
-          />
+        <div className="mb-16">
+          <div className="max-w-4xl mx-auto rounded-xl border bg-card/50 backdrop-blur p-4 md:p-6">
+            <WorkflowProgress 
+              currentStep={currentStep}
+              completedSteps={completedSteps}
+              className=""
+            />
+          </div>
         </div>
 
         {/* Next Step Action */}
         <div className="mb-12">
-          <div className="max-w-2xl mx-auto">
+          <div className="max-w-4xl mx-auto">
             <div className="p-8 border-2 border-primary/20 rounded-lg bg-primary/5 text-center">
               <div className="flex justify-center mb-4">
                 <div className="p-3 bg-primary/10 rounded-full">
@@ -95,7 +115,7 @@ export default function DashboardHome() {
         </div>
 
         {/* Quick Access Cards */}
-        <div className="mb-8">
+        {/* <div className="mb-8">
           <h3 className="text-lg font-semibold text-center mb-6 text-muted-foreground">Quick Access</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="group">
@@ -180,32 +200,26 @@ export default function DashboardHome() {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
 
         {/* Quick Stats or Recent Activity */}
-        <div className="bg-muted/30 rounded-lg p-8">
-          <h2 className="text-xl font-semibold mb-4">Quick Start Tips</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="text-center">
+        <div className="rounded-xl border bg-card/50 backdrop-blur p-6 md:p-8">
+          <h2 className="text-xl font-semibold mb-6 text-center md:text-left">Quick Start Tips</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+            <div className="text-center md:text-left p-4 rounded-lg border bg-background/50">
               <div className="text-3xl mb-2">📁</div>
-              <h4 className="font-semibold mb-2">Prepare Your Data</h4>
-              <p className="text-sm text-muted-foreground">
-                Ensure your CSV has columns like Name, Course, Date, etc.
-              </p>
+              <h4 className="font-semibold mb-1">Prepare Your Data</h4>
+              <p className="text-sm text-muted-foreground">Ensure your CSV has columns like Name, Course, Date, etc.</p>
             </div>
-            <div className="text-center">
+            <div className="text-center md:text-left p-4 rounded-lg border bg-background/50">
               <div className="text-3xl mb-2">🎨</div>
-              <h4 className="font-semibold mb-2">Choose a Template</h4>
-              <p className="text-sm text-muted-foreground">
-                Select from our pre-designed templates or create your own.
-              </p>
+              <h4 className="font-semibold mb-1">Choose a Template</h4>
+              <p className="text-sm text-muted-foreground">Select from our pre-designed templates or create your own.</p>
             </div>
-            <div className="text-center">
+            <div className="text-center md:text-left p-4 rounded-lg border bg-background/50">
               <div className="text-3xl mb-2">⚡</div>
-              <h4 className="font-semibold mb-2">Generate & Download</h4>
-              <p className="text-sm text-muted-foreground">
-                Generate certificates instantly and download them as PDFs.
-              </p>
+              <h4 className="font-semibold mb-1">Generate & Download</h4>
+              <p className="text-sm text-muted-foreground">Generate certificates instantly and download them as images.</p>
             </div>
           </div>
         </div>
