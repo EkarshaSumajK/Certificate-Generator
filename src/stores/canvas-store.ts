@@ -258,9 +258,35 @@ export const useCanvasStore = create<CanvasStoreState>()(
       exportCanvas: async (): Promise<string> => {
         const { stageRef } = get();
         try {
-          const stage = stageRef as unknown as { toDataURL?: (opts?: { pixelRatio?: number }) => string };
+          const stage = stageRef as unknown as {
+            toDataURL?: (opts?: { pixelRatio?: number; mimeType?: string }) => string;
+            scale?: (v: { x: number; y: number }) => void;
+            scaleX?: () => number;
+            scaleY?: () => number;
+            position?: (v?: { x: number; y: number }) => { x: number; y: number } | void;
+            batchDraw?: () => void;
+          };
           if (stage && typeof stage.toDataURL === 'function') {
-            return stage.toDataURL({ pixelRatio: 2 });
+            // Preserve current view transforms (zoom/pan)
+            const prevScale = {
+              x: typeof stage.scaleX === 'function' ? stage.scaleX() : 1,
+              y: typeof stage.scaleY === 'function' ? stage.scaleY() : 1
+            };
+            const prevPos = (typeof stage.position === 'function' ? stage.position() : { x: 0, y: 0 }) as { x: number; y: number };
+
+            // Reset transforms to export at native canvas size (same as input image)
+            if (typeof stage.scale === 'function') stage.scale({ x: 1, y: 1 });
+            if (typeof stage.position === 'function') stage.position({ x: 0, y: 0 });
+            if (typeof stage.batchDraw === 'function') stage.batchDraw();
+
+            const dataUrl = stage.toDataURL({ pixelRatio: 1, mimeType: 'image/png' });
+
+            // Restore previous transforms to keep UI unchanged
+            if (typeof stage.scale === 'function') stage.scale({ x: prevScale.x, y: prevScale.y });
+            if (typeof stage.position === 'function') stage.position({ x: prevPos.x, y: prevPos.y });
+            if (typeof stage.batchDraw === 'function') stage.batchDraw();
+
+            return dataUrl;
           }
         } catch {}
         return 'data:image/png;base64,';
