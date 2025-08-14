@@ -41,9 +41,9 @@ export function Navbar() {
                     Upload Template
                   </Button>
                 </Link>
-                <Link href="/dashboard/create">
-                  <Button variant="ghost" size="sm" className={pathname === '/dashboard/create' ? 'bg-muted' : ''}>
-                    Create Certificate
+                <Link href="/dashboard/editor">
+                  <Button variant="ghost" size="sm" className={pathname === '/dashboard/editor' ? 'bg-muted' : ''}>
+                    Editor
                   </Button>
                 </Link>
               </div>

@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { TemplateUpload } from '@/components/template-upload';
 import { TemplatePreview } from '@/components/template-preview';
+import { useRouter } from 'next/navigation';
 import { useCurrentTemplate, useTemplateError } from '@/stores/template-store';
 import { useCSVData } from '@/stores/csv-store';
 import { WorkflowProgress } from '@/components/workflow-progress';
@@ -16,6 +17,7 @@ export default function UploadTemplatePage() {
   const error = useTemplateError();
   const csvData = useCSVData();
   const [uploadComplete, setUploadComplete] = useState(false);
+  const router = useRouter();
 
   // Determine workflow progress
   const completedSteps: ('csv' | 'template' | 'editor')[] = [];
@@ -27,8 +29,8 @@ export default function UploadTemplatePage() {
   };
 
   const handleContinue = () => {
-    // Direct to certificate editor as final step
-    window.location.href = '/dashboard/create';
+    // Client-side navigation to preserve in-memory Zustand state
+    router.push('/dashboard/editor');
   };
 
   return (
@@ -169,7 +171,7 @@ export default function UploadTemplatePage() {
               </p>
               <div className="flex gap-2">
                 <Button onClick={handleContinue} className="flex-1">
-                  Next: Create Certificates
+                  Next: Open Editor
                 </Button>
                 <Button variant="outline" onClick={() => window.location.reload()}>
                   Upload Different Template

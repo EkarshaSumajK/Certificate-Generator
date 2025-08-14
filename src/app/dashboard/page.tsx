@@ -42,8 +42,8 @@ export default function DashboardHome() {
       return {
         title: "Ready to create certificates!",
         description: "Generate beautiful certificates with your data and template",
-        href: "/dashboard/create",
-        buttonText: "Create Certificates",
+        href: "/dashboard/editor",
+        buttonText: "Open Editor",
         icon: <Settings className="w-5 h-5" />
       };
     }
@@ -166,14 +166,14 @@ export default function DashboardHome() {
                   {csvData && template ? 'Ready to generate certificates' : 'Complete steps 1 & 2 first'}
                 </p>
                 <div className="text-center">
-                  <Link href="/dashboard/create">
+                  <Link href="/dashboard/editor">
                     <Button 
                       size="sm" 
                       variant={csvData && template ? "default" : "outline"}
                       className="w-full"
                       disabled={!csvData || !template}
                     >
-                      Create Certificates
+                      Open Editor
                     </Button>
                   </Link>
                 </div>

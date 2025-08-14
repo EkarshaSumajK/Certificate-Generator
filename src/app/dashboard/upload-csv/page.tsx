@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { CSVUpload } from '@/components/csv-upload';
 import { CSVPreview } from '@/components/csv-preview';
+import { useRouter } from 'next/navigation';
 import { useCSVData, useCSVError } from '@/stores/csv-store';
 import { useCurrentTemplate } from '@/stores/template-store';
 import { WorkflowProgress } from '@/components/workflow-progress';
@@ -16,6 +17,7 @@ export default function UploadCSVPage() {
   const error = useCSVError();
   const template = useCurrentTemplate();
   const [uploadComplete, setUploadComplete] = useState(false);
+  const router = useRouter();
 
   // Determine workflow progress
   const completedSteps: ('csv' | 'template' | 'editor')[] = [];
@@ -27,8 +29,8 @@ export default function UploadCSVPage() {
   };
 
   const handleContinue = () => {
-    // Direct to template upload as next step
-    window.location.href = '/dashboard/upload-template';
+    // Client-side navigation to preserve in-memory Zustand state
+    router.push('/dashboard/upload-template');
   };
 
   return (

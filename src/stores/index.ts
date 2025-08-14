@@ -16,3 +16,17 @@ export {
   useTemplateLoading,
   useTemplateError
 } from './template-store';
+
+export {
+  useCanvasStore,
+  useCanvasBackground,
+  useCanvasElements,
+  useSelectedElements,
+  useCanvasZoom,
+  useCanvasPan,
+  useCanvasSize,
+  useCanvasCanUndo,
+  useCanvasCanRedo,
+  useCanvasUndo,
+  useCanvasRedo
+} from './canvas-store';

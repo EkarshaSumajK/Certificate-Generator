@@ -42,7 +42,7 @@ export function WorkflowProgress({
       title: 'Create Certificates',
       description: 'Design and generate certificates',
       icon: <Settings className="w-5 h-5" />,
-      href: '/dashboard/create',
+      href: '/dashboard/editor',
     },
   ];
 
